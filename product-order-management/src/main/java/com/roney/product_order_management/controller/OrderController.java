@@ -2,6 +2,7 @@ package com.roney.product_order_management.controller;
 
 import com.roney.product_order_management.dto.OrderRequestDto;
 import com.roney.product_order_management.dto.OrderResponseDto;
+import com.roney.product_order_management.dto.Summary;
 import com.roney.product_order_management.exception.ResourceNotFoundException;
 import com.roney.product_order_management.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class OrderController {
     public ResponseEntity<?> saveOrder(@RequestBody OrderRequestDto requestDto){
 
         try{
-            OrderResponseDto dto = service.createOrder(requestDto.getCustomerId(), requestDto.getProducts());
+            OrderResponseDto dto = service.createOrder(requestDto.getCustomerId(), requestDto.getProductIds());
             return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -42,6 +43,11 @@ public class OrderController {
         } catch (ResourceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("api/orders/summary")
+    public ResponseEntity<Summary> getSummary() {
+        return ResponseEntity.ok(service.getSummary());
     }
 
 }

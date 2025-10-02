@@ -16,5 +16,5 @@ public class OrderRequestDto {
     @NotNull
     private Integer customerId;
     @NotEmpty
-    private List<Integer> products;
+    private List<Integer> productIds;
 }

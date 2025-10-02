@@ -2,6 +2,7 @@ package com.roney.product_order_management.service;
 
 import com.roney.product_order_management.config.ModelMapperConfig;
 import com.roney.product_order_management.dto.OrderResponseDto;
+import com.roney.product_order_management.dto.Summary;
 import com.roney.product_order_management.exception.ResourceNotFoundException;
 import com.roney.product_order_management.model.Customer;
 import com.roney.product_order_management.model.Order;
@@ -73,5 +74,16 @@ public class OrderService {
         order.setOrderStatus(Order.OrderStatus.CANCELLED);
         Order updated = orderRepo.save(order);
         return mapToDto(updated);
+    }
+
+    public Summary getSummary() {
+
+        Long totalOrders = orderRepo.count();
+        double revenue = orderRepo.findAll().stream()
+                .filter(o -> o.getOrderStatus() != Order.OrderStatus.CANCELLED)
+                .mapToDouble(Order::getTotalAmount)
+                .sum();
+
+        return new Summary(totalOrders,revenue);
     }
 }
