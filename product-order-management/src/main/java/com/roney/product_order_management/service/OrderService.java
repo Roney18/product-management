@@ -1,6 +1,7 @@
 package com.roney.product_order_management.service;
 
 import com.roney.product_order_management.config.ModelMapperConfig;
+import com.roney.product_order_management.dto.OrderRequestDto;
 import com.roney.product_order_management.dto.OrderResponseDto;
 import com.roney.product_order_management.dto.Summary;
 import com.roney.product_order_management.exception.ResourceNotFoundException;
@@ -30,13 +31,14 @@ public class OrderService {
     @Autowired
     private OrderRepo orderRepo;
 
-    public OrderResponseDto createOrder(Integer customerId, List<Integer> productIds) throws ResourceNotFoundException {
-        Customer customer = customerRepo.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer Not Found"));
+    public OrderResponseDto createOrder(OrderRequestDto request) throws ResourceNotFoundException {
+        Customer customer = customerRepo.findById(request.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer Not Found"));
 
-        List<Product> products = productRepo.findAllById(productIds);
-        if (products.isEmpty())
+        List<Product> products = productRepo.findAllById(request.getProducts());
+        if (products.isEmpty()) {
             throw new ResourceNotFoundException("No products found for given IDs");
+        }
 
         double total = products.stream().mapToDouble(Product::getPrice).sum();
 
@@ -47,10 +49,9 @@ public class OrderService {
         order.setTotalAmount(total);
         order.setOrderStatus(Order.OrderStatus.NEW);
 
-        Order saved = orderRepo.save(order);
-
-        return mapToDto(saved);
+        return mapToDto(orderRepo.save(order));
     }
+
 
 
 

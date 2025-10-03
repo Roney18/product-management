@@ -13,8 +13,8 @@ import java.util.List;
 public class OrderRequestDto {
 
 
-    @NotNull
+    @NotNull(message = "Customer ID cannot be null")
     private Integer customerId;
-    @NotEmpty
-    private List<Integer> productIds;
+    @NotEmpty(message = "Products list cannot be empty")
+    private List<Integer> products;
 }

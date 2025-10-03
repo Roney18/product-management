@@ -24,6 +24,7 @@ public class Product {
 
     @NotNull
     private String name;
+
     private String category;
 
     @NotNull
